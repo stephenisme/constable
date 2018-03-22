@@ -12,10 +12,13 @@
     </div>
   </nav>
 
-  <p class="interests-message container">
-    <%= dngettext("interest-count", "You're subscribed to 1 interest.", "You're subscribed to %{count} interests.", interest_count_for(@current_user)) %>
+  <p class="interests-message <%= class_for("mine", @conn) %>">
+
     <%= link to: interest_path(@conn, :index), data: [role: "view-all-interests"] do %>
-      <%= gettext "Manage your interests." %>
+      <span class="subscribed-to">
+        <%= dngettext("interest-count", "Subscribed to 1 interests", "Subscribed to %{count} interests", interest_count_for(@current_user)) %>
+      </span>
+      <%= gettext "(edit)" %>
     <% end %>
   </p>
 
