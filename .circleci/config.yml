@@ -6,7 +6,9 @@ jobs:
       - image: circleci/elixir:1.4.2
         environment:
           MIX_ENV: test
-      - image: circleci/node:6.13.1
+      - image: circleci/node:8.10.0
+          environment:
+            NODE_ENV: test
       - image: circleci/postgres:10.1-alpine
         environment:
           POSTGRES_USER: postgres
@@ -70,3 +72,6 @@ jobs:
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
 
       - run: mix test
+
+      - store_test_results:
+          path: _build/test/junit
