@@ -6,7 +6,7 @@ jobs:
       - image: circleci/elixir:1.4.2
         environment:
           MIX_ENV: test
-      - image: circleci/node:8.10.0
+      - image: circleci/node:8.10-browsers
         environment:
           NODE_ENV: test
       - image: circleci/postgres:10.1-alpine
