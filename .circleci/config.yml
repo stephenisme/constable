@@ -6,6 +6,7 @@ jobs:
       - image: circleci/elixir:1.4.2
         environment:
           MIX_ENV: test
+      - image: circleci/node:6.0.0
       - image: circleci/postgres:10.1-alpine
         environment:
           POSTGRES_USER: postgres
@@ -46,11 +47,26 @@ jobs:
           key: v1-build-cache
           paths: "_build"
 
+      - restore_cache:
+          keys:
+            - v1-npm-cache-{{ .Branch }}-{{ checksum "assets/package-lock.json" }}
+            - v1-npm-cache-{{ .Branch }}
+            - v1-npm-cache
+      - run:
+          working_directory: assets
+          command: npm install && node_modules/.bin/brunch build
+      - save_cache:
+          key: v1-npm-cache-{{ .Branch }}-{{ checksum "assets/package-lock.json" }}
+          paths: "assets/node_modules"
+      - save_cache:
+          key: v1-npm-cache-{{ .Branch }}
+          paths: "assets/node_modules"
+      - save_cache:
+          key: v1-npm-cache
+          paths: "assets/node_modules"
+
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
 
-      - run: bin/test_suite
-
-      - store_test_results:
-          path: _build/test/junit
+      - run: mix test
